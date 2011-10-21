@@ -16,7 +16,7 @@ public class Test
 		                                          + "..87.51.."
 		                                          + "........."
 		                                          + ".6.2.8.3."
-		                                          + "84.1.9.27";
+		                                          + "34.1.9.27";
 
 
 	public static void main (String args[])
