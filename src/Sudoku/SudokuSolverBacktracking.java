@@ -11,7 +11,7 @@ public class SudokuSolverBacktracking extends SudokuSolver{
 	private int solucion[][];
 	private boolean inicial[][];
 	
-	private void backtrack(int posX, int posY){
+	private boolean backtrack(int posX, int posY){
 		
 		if(inicial[posX][posY] == false){
 			for(int i=1;i<=9;i++){
@@ -19,13 +19,16 @@ public class SudokuSolverBacktracking extends SudokuSolver{
 				if(compruebaCasilla(posX,posY)){
 					if(posX==8 && posY==8){
 						System.out.println("Sudoku resuelto.");
-						return;
+						return true;
 					}
-					if(posX<8 && posY == 8)
-						backtrack(posX+1,0);
-					else{
-						if(posX<=8 && posY < 8)
-							backtrack(posX,posY+1);
+					if(posX<8 && posY == 8){
+						if(backtrack(posX+1,0))
+							return true;
+					}else{
+						if(posX<=8 && posY < 8){
+							if(backtrack(posX,posY+1))
+								return true;
+						}
 					}
 				}
 				solucion[posX][posY] = 0;
@@ -33,22 +36,19 @@ public class SudokuSolverBacktracking extends SudokuSolver{
 		}else{ //inicial[posX][posY] es true
 			if(posX==8 && posY==8){
 				System.out.println("Sudoku resuelto.");
-				return;
+				return true;
 			}
-			if(posX<8 && posY == 8)
-				backtrack(posX+1,0);
-			else{
-				if(posX<=8 && posY < 8)
-					backtrack(posX,posY+1);
+			if(posX<8 && posY == 8){
+				if(backtrack(posX+1,0))
+					return true;
+			}else{
+				if(posX<=8 && posY < 8){
+					if(backtrack(posX,posY+1))
+						return true;
+				}
 			}
 		}
-		//Mostrar estado actual
-				String cadena = "";
-		for(int i=0;i<9;i++){
-			for(int j=0;j<9;j++)
-				cadena = cadena + String.valueOf(sudoku[i][j]);
-		}
-		System.out.println(cadena);
+		return false;
 	}
 	
 	/**
@@ -139,28 +139,32 @@ public class SudokuSolverBacktracking extends SudokuSolver{
 	public SudokuSolverBacktracking (String template){
 		
 		sudoku = new int[9][9];
+		solucion = new int[9][9];
 		
 		for(int i=0;i<9;i++){
 			for(int j=1;j<=9;j++){
 				char val;
 				val = template.charAt((9*i+j)-1);
-				if(val != '.' && val != '-')
+				if(val != '.' && val != '-'){
 					sudoku[i][j-1] = Character.digit(val, 10);
-				else
+					solucion[i][j-1] = sudoku[i][j-1];
+				}else{
 					sudoku[i][j-1] = 0;
+					solucion[i][j-1] = sudoku[i][j-1];
+				}
 			}		
 		}
-	}
-
-	@Override
-	public void solve() {
-		solucion = sudoku.clone();
 		inicial = new boolean[9][9];
 		for(int i=0;i<9;i++){
 			for(int j=0;j<9;j++)
 			inicial[i][j] = solucion[i][j] != 0;					
 		}
-		backtrack(0,0);
+	}
+
+	@Override
+	public void solve() {
+		this.toString();
+		backtrack(0,0);	
 		sudoku = solucion;
 	}
 

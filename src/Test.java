@@ -8,16 +8,16 @@ import Sudoku.*;
  */
 public class Test
 {
-	public static final String SUDOKU_POR_DEFECTO = "97.3.4.65"
-		                                          + ".2.5.6.8."
-		                                          + "........."
-		                                          + "..58.29.."
-		                                          + "..2.4.3.."
-		                                          + "..87.51.."
-		                                          + "........."
-		                                          + ".6.2.8.3."
-		                                          + "34.1.9.27";
-
+	public static final String SUDOKU_POR_DEFECTO = "038020000"
+												  + "000000008"
+		                                          + "000006007"
+		                                          + "000000070"
+		                                          + "001000400"
+		                                          + "040000000"
+		                                          + "400500000"
+		                                          + "100000000"
+												  + "000030260"
+												  ;
 
 	public static void main (String args[])
 	{
