@@ -172,9 +172,16 @@ public class SudokuSolverBacktracking extends SudokuSolver{
 	public String toString() {
 		String cadena = "";
 		for(int i=0;i<9;i++){
-			for(int j=0;j<9;j++)
-				cadena = cadena + String.valueOf(sudoku[i][j]);
-		}
+			if(i%3 == 0)
+				cadena += "=============\n";
+			for(int j=0;j<9;j++){
+				if(j%3 == 0)
+					cadena += "|";
+				cadena += sudoku[i][j];			
+			}
+			cadena += "|\n";
+		}		
+		cadena += "=============\n";
 		return cadena;
 	}
 

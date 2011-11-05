@@ -1,5 +1,8 @@
 
 import java.util.Date;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
+import java.io.IOException;
 import Sudoku.*;
 
 /**
@@ -19,7 +22,7 @@ public class Test
 												  + "000030260"
 												  ;
 
-	public static void main (String args[])
+	public static void main (String args[]) throws IOException
 	{
 		String       plantilla;
 		SudokuSolver sudoku;
@@ -30,21 +33,12 @@ public class Test
 
 		// Argumentos de entrada
 
-		if (args.length==0) {
-
-			System.err.println("Por favor, indique su sudoku como argumento de este programa.");
-			System.err.println("Asumiendo sudoku por defecto...");
+		InputStreamReader isr = new InputStreamReader(System.in);
+		BufferedReader br = new BufferedReader(isr);
+		System.out.println("Introduzca el sudoku-X:");
+		plantilla = br.readLine();
+		if(plantilla.length() == 0)
 			plantilla = SUDOKU_POR_DEFECTO;
-
-		} else {
-
-			plantilla = "";
-
-			for (int i=0;i<args.length; i++)
-				plantilla += args[i];
-
-		}
-
 
 		// Resolución del sudoku
 
@@ -52,7 +46,7 @@ public class Test
 
 		sudoku = new SudokuSolverBacktracking (plantilla);
 
-		sudoku.solve();
+		//sudoku.solve();
 
 		fin = (new Date()).getTime();
 
