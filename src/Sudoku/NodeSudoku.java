@@ -5,21 +5,23 @@ import java.util.ArrayList;
  *
  * @author Jose Angel Gonzalez Molina
  */
-public class RestrictedSudoku {
+public class NodeSudoku {
 	
 	ArrayList sudoku;
 	int casillaActiva;
 	ArrayList posibles;
 	
-	RestrictedSudoku (String template){
+	NodeSudoku (String template,int activa){
 		
 		sudoku = new ArrayList(9*9);
 		
 		for(int i=0;i<template.length();i++)
 			sudoku.add(template.charAt(i));
+		
+		casillaActiva = activa;
 	}
 	
-	RestrictedSudoku (ArrayList nuevoSudoku){
+	NodeSudoku (ArrayList nuevoSudoku){
 
 		sudoku = new ArrayList();
 		sudoku = (ArrayList) nuevoSudoku.clone();
@@ -41,4 +43,13 @@ public class RestrictedSudoku {
 		
 		return posibles.toArray();
 	}
+	
+	void setPossible(Object pos){
+		posibles.add(pos);
+	}
+	
+	void erasePossible(Object pos){
+		posibles.remove(pos);
+	}
+	
 }

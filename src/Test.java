@@ -11,15 +11,15 @@ import Sudoku.*;
  */
 public class Test
 {
-	public static final String SUDOKU_POR_DEFECTO = "038020000"
-												  + "000000008"
-		                                          + "000006007"
-		                                          + "000000070"
-		                                          + "001000400"
-		                                          + "040000000"
-		                                          + "400500000"
-		                                          + "100000000"
-												  + "000030260"
+	public static final String SUDOKU_POR_DEFECTO = "000000000"
+												  + "000001000"
+												  + "020000304"
+												  + "000000000"
+												  + "500000000"
+												  + "000006000"
+												  + "000230005"
+												  + "607000080"
+												  + "000000000"
 												  ;
 
 	public static void main (String args[]) throws IOException
@@ -46,7 +46,7 @@ public class Test
 
 		sudoku = new SudokuSolverBacktracking (plantilla);
 
-		//sudoku.solve();
+		sudoku.solve();
 
 		fin = (new Date()).getTime();
 
