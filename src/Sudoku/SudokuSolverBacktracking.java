@@ -135,7 +135,7 @@ public class SudokuSolverBacktracking extends SudokuSolver{
 		return sigue;
 		
 	}
-
+	
 	public SudokuSolverBacktracking (String template){
 		
 		sudoku = new int[9][9];

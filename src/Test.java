@@ -37,6 +37,7 @@ public class Test
 		BufferedReader br = new BufferedReader(isr);
 		System.out.println("Introduzca el sudoku-X:");
 		plantilla = br.readLine();
+		
 		if(plantilla.length() == 0)
 			plantilla = SUDOKU_POR_DEFECTO;
 
