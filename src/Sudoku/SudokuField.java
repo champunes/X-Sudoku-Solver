@@ -26,12 +26,17 @@ public class SudokuField implements Cloneable{
 		value = copy.value;
 		initial = copy.initial;
 		possibles = new ArrayList<Integer>();
-		possibles.addAll(copy.possibles);
+		for(int i=0;i<copy.possibles.size();i++)
+			possibles.add(new Integer(copy.possibles.get(i)));
 		
 	}
 	
 	public boolean isInitial(){
 		return initial;
+	}
+	
+	public void setInitial(boolean i){
+		initial = i;
 	}
 	
 	public int getValue(){
@@ -42,7 +47,7 @@ public class SudokuField implements Cloneable{
 	public void setValue(int v){
 		value = v;
 	}
-	
+		
 	public void printPossibles(){
 		
 		if(!initial){

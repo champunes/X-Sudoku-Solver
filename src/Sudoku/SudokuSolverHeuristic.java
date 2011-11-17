@@ -24,45 +24,37 @@ public class SudokuSolverHeuristic extends SudokuSolver{
 		int sigCasilla;
 		SudokuNode padre,hijo;
 		
-		int t = 0;
 		System.out.println(this.toString());
-		
+
 		padre = solution;
 		sigCasilla = padre.getNextActive();
-		int padres=1;
 		do{			
-			int activa = padre.getActive();
+			
+			//System.out.print("Rellenas: "+padre.getNumFilled()+"\tActiva(valor): "+padre.getActive()+"("+padre.getActiveValue()+")"+"\n"+padre.toString());
+			
+			//Obtenemos las posibilidades del padre
 			padre.setActive(sigCasilla);
 			int[] posibles = padre.getActivePossibles();
-			System.out.println("Posibles padre "+padres+" con activa "+activa+" que genera hijos con activa "+padre.getActive());
-			System.out.println(padre.getActiveNumPossibles());
-			padre.setActive(activa);			
+						
+			//System.out.println("Hijos posibles: "+padre.getActiveNumPossibles()+"\n");
+			
+			//Obtenemos los nuevos hijos y los metemos en la cola
 			for(int i=0;i<posibles.length;i++){
-				hijo = new SudokuNode(padre.getSudoku(),sigCasilla,posibles[i]);
-				System.out.println(hijo.toString());
-				
-				if(hijo.getNumRestrictions() > 0){
-					hijo.aplicateRestrictions();
+				hijo = new SudokuNode(padre.getSudoku(),sigCasilla,posibles[i],padre.getNumFilled());
+				if(hijo.getNumRestrictions() >= 0)
 					stack.offer(hijo);
-				}
-				System.out.println("Seleccionado el hijo con posibilidad "+hijo.getActiveValue());
-				hijo.printAllPossibles();
 			}
-			padre = stack.poll();			
+			
+			//Obtenemos el nuevo padre
+			padre = stack.poll();
 			sigCasilla = padre.getNextActive();
-			while(sigCasilla == -1 && !stack.isEmpty()){
+			while(sigCasilla == -1 && !stack.isEmpty() && padre.getNumFilled()<81){
 				padre = stack.poll();
-				System.out.println("Seleccionado el hijo con posibilidad "+padre.getActiveValue());
 				sigCasilla = padre.getNextActive();
-			}
-			if(sigCasilla == -1)
-				t++;
-			System.out.println("Sig casilla: "+sigCasilla+"\n");
-			padres++;
-			solution = padre;
-			//t++;
-		}while(sigCasilla > -1 && t<100);
-		t++;
+			}				
+			
+		}while(sigCasilla > -1);
+		solution = padre;
 	}
 	
 	@Override
