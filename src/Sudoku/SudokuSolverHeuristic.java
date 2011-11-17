@@ -23,8 +23,6 @@ public class SudokuSolverHeuristic extends SudokuSolver{
 		
 		int sigCasilla;
 		SudokuNode padre,hijo;
-		
-		System.out.println(this.toString());
 
 		padre = solution;
 		sigCasilla = padre.getNextActive();
