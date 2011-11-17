@@ -11,6 +11,8 @@ import Sudoku.*;
  */
 public class Test
 {
+	
+	//800300000300005000009104000040080700600000002008020030000709600000200005000008004
 	public static final String SUDOKU_POR_DEFECTO = "000000000"
 												  + "000001000"
 												  + "020000304"
@@ -45,7 +47,8 @@ public class Test
 
 		inicio = (new Date()).getTime();
 
-		sudoku = new SudokuSolverBacktracking (plantilla);
+		//sudoku = new SudokuSolverBacktracking (plantilla);
+ 		sudoku = new SudokuSolverHeuristic (plantilla);
 
 		sudoku.solve();
 
@@ -59,6 +62,28 @@ public class Test
 		System.out.println("Solución:");
 		System.out.println(sudoku.toString());
 		System.out.println("Tiempo: "+tiempo+" milisegundos.");
+		
+	/*	PriorityQueue<Integer> stack = new PriorityQueue();
+		stack.offer(1);
+		stack.offer(5);
+		stack.offer(6);
+		stack.offer(2);
+		stack.offer(8);
+		stack.offer(3);
+		stack.offer(9);
+		stack.offer(2);
+		stack.offer(43);
+		stack.offer(1234);
+		stack.offer(2345);
+		stack.offer(934);
+		stack.offer(2);
+		stack.offer(43);
+		stack.offer(456);
+		stack.offer(45);
+		
+		while (!stack.isEmpty()){
+			System.out.println(stack.poll());
+		}*/
 	}
 
 }
