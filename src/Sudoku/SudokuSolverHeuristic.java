@@ -27,27 +27,24 @@ public class SudokuSolverHeuristic extends SudokuSolver{
 		padre = solution;
 		sigCasilla = padre.getNextActive();
 		
-		int ejecuciones=0;
-		
 		do{
-			do{
-
-				//System.out.println(padre.toString());
-				padre.setActive(sigCasilla);
-				int posibles[] = padre.getActivePossibles();
-
-				for(int i=0;i<posibles.length;i++){				
-					hijo = new SudokuNode(padre.getSudoku(),sigCasilla,posibles[i],padre.getNumFilled());
-					if(hijo.getNumRestrictions() >= 0)
-						stack.offer(hijo);
-				}
-				sigCasilla = padre.getNextActive();
-			}while(sigCasilla > -1);
+			padre.setActive(sigCasilla);
 			
-			padre = stack.poll();			
+			//if(padre.getNumFilled() == 54 && padre.getActive()==10)
+			//	padre = padre;
+			
+			int posibles[] = padre.getActivePossibles();
+
+			for(int i=0;i<posibles.length;i++){				
+				hijo = new SudokuNode(padre.getSudoku(),sigCasilla,posibles[i],padre.getNumFilled());
+				//System.out.println(hijo.toString());
+				if(hijo.getNumRestrictions() >= 0)					
+					stack.offer(hijo);
+			}
+			padre = stack.poll();
+			//System.out.println(padre.toString());
 			sigCasilla = padre.getNextActive();
-		ejecuciones++;	
-		}while(!stack.isEmpty() && padre.getNumFilled()<81 && ejecuciones < 2000);
+		}while(sigCasilla > -1 && padre.getNumFilled()<81);
 		System.out.println(padre.getNumFilled());
 		solution = padre;
 		

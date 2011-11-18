@@ -12,7 +12,7 @@ public class SudokuNode implements Comparable{
 	private int active;
 	private int filled;
 	private int restrictions;//Restricciones generadas al expandir restricciones
-	private boolean[] looked;//Casillas que han generado hijos
+	//private boolean[] looked;//Casillas que han generado hijos
 	
 	private void createRestrictions(){
 		
@@ -47,7 +47,7 @@ public class SudokuNode implements Comparable{
 		int i=0;		
 		while(i<9){
 			vecino = sudoku.get(fila*9+i);			
-			if(vecino.isPossible(actual.getValue())){
+			if(vecino.isPossible(actual.getValue()) && !vecino.isInitial()){
 				if(vecino.getNumPossibles() > 1 && vecino.getNumPossibles() < 10){
 					vecino.erasePossible(actual.getValue());					
 					restricciones++;
@@ -62,7 +62,7 @@ public class SudokuNode implements Comparable{
 		i=0;		
 		while(i<9){
 			vecino = sudoku.get(i*9+columna);
-			if(vecino.isPossible(actual.getValue())){
+			if(vecino.isPossible(actual.getValue()) && !vecino.isInitial()){
 				if(vecino.getNumPossibles() > 1 && vecino.getNumPossibles() < 10){
 					vecino.erasePossible(actual.getValue());					
 					restricciones++;
@@ -80,7 +80,7 @@ public class SudokuNode implements Comparable{
 			j=0;
 			while(j<3){
 				vecino = sudoku.get((i+(cuadX*3))*9+(j+(cuadY*3)));
-				if(vecino.isPossible(actual.getValue())){
+				if(vecino.isPossible(actual.getValue()) && !vecino.isInitial()){
 					if(vecino.getNumPossibles() > 1 && vecino.getNumPossibles() < 10){
 						vecino.erasePossible(actual.getValue());						
 						restricciones++;
@@ -98,7 +98,7 @@ public class SudokuNode implements Comparable{
 			j=0;
 			while(i<9&&j<9){
 				vecino = sudoku.get(i*9+j);
-				if(vecino.isPossible(actual.getValue())){
+				if(vecino.isPossible(actual.getValue()) && !vecino.isInitial()){
 					if(vecino.getNumPossibles() > 1 && vecino.getNumPossibles() < 10){						
 						vecino.erasePossible(actual.getValue());						
 						restricciones++;
@@ -115,7 +115,7 @@ public class SudokuNode implements Comparable{
 			j=8;
 			while(i<9&&j>=0){
 				vecino = sudoku.get(i*9+j);
-				if(vecino.isPossible(actual.getValue())){
+				if(vecino.isPossible(actual.getValue()) && !vecino.isInitial()){
 					if(vecino.getNumPossibles() > 1 && vecino.getNumPossibles() < 10){
 						vecino.erasePossible(actual.getValue());						
 						restricciones++;
@@ -222,9 +222,9 @@ public class SudokuNode implements Comparable{
 		filled=0;
 		restrictions = 0;
 		
-		looked = new boolean[81];
+/*		looked = new boolean[81];
 		for(int i=0;i<81;i++)
-			looked[i]=false;
+			looked[i]=false;*/
 			
 		active = 0;
 		
@@ -246,9 +246,9 @@ public class SudokuNode implements Comparable{
 		active = act;
 		filled = fld+1;
 		
-		looked = new boolean[81];
+/*		looked = new boolean[81];
 		for(int i=0;i<81;i++)
-			looked[i]=false;
+			looked[i]=false;*/
 		
 		for(int i=0;i<81;i++){
 			sudoku.add((SudokuField)tablero.get(i).clone());
@@ -265,13 +265,12 @@ public class SudokuNode implements Comparable{
 		
 	}
 	
-	public double utility(double facFill,double facPosAc,double facRest){
+	public double utility(double facFilled,double facRest){
 		
-		double fillN = filled/81.0;
-		double possN = this.getActiveNumPossibles()/9.0;
+		double fillN = filled/81.0; 
 		double restN = restrictions/40.0;
 		
-		return fillN*facFill+facPosAc*(1-possN)+facRest*restN;
+		return facFilled*fillN+facRest*restN;
 		
 	}
 	
@@ -332,18 +331,20 @@ public class SudokuNode implements Comparable{
 		
 		SudokuField campo;
 		
+		int minpossibles = 10000000;
 		int minpos=0;
 		
 		for(int i=0;i<81;i++){
 			campo = sudoku.get(i);
-			if(!campo.isInitial() && !looked[i]){
-				if(campo.getNumPossibles() < sudoku.get(minpos).getNumPossibles()){
-					looked[i]=true;
+			if(!campo.isInitial() /*&& !looked[i]*/){
+				if(campo.getNumPossibles() < minpossibles){
+					//looked[i]=true;
+					minpossibles = campo.getNumPossibles();
 					minpos=i;
 				}
 			}
 		}
-		if(sudoku.get(minpos).getNumPossibles() == 10)
+		if(minpossibles == 10000000)
 			return -1;
 		return minpos;
 	}
@@ -364,8 +365,8 @@ public class SudokuNode implements Comparable{
 	public int compareTo(Object t) {
 		
 		SudokuNode nodo = (SudokuNode)t;
-		double miUtilidad = this.utility(0.9,0.05,0.05);
-		double tUtilidad = nodo.utility(0.9,0.05,0.05);
+		double miUtilidad = this.utility(0.9,0.1);
+		double tUtilidad = nodo.utility(0.9,0.1);
 		
 		if(miUtilidad > tUtilidad)
 			return -1;
