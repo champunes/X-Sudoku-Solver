@@ -12,6 +12,7 @@ public class SudokuNode implements Comparable{
 	private int active;
 	private int filled;
 	private int restrictions;//Restricciones generadas al expandir restricciones
+	private boolean[] looked;//Casillas que han generado hijos
 	
 	private void createRestrictions(){
 		
@@ -41,21 +42,13 @@ public class SudokuNode implements Comparable{
 		int fila = active/9;
 		int columna = active%9;
 		int restricciones = 0;
-		
-		//System.out.println("Actual: "+(fila*9+columna)+"\tValor:"+actual.getValue());
-		
-		//System.out.println("Posibles vecinos fila: ");
-		
+				
 		//Expande la fila
 		int i=0;		
 		while(i<9){
 			vecino = sudoku.get(fila*9+i);			
 			if(vecino.isPossible(actual.getValue())){
-				if(vecino.getNumPossibles() < 10){
-					
-					//System.out.println("Vecino"+(fila*9+i)+" : ");
-					//vecino.printPossibles();
-					
+				if(vecino.getNumPossibles() > 1 && vecino.getNumPossibles() < 10){
 					vecino.erasePossible(actual.getValue());					
 					restricciones++;
 				}
@@ -64,19 +57,13 @@ public class SudokuNode implements Comparable{
 			}
 			i++;
 		}
-		
-		//System.out.println("Posibles vecinos columna: ");
-		
+				
 		//Comprueba la columna
 		i=0;		
 		while(i<9){
 			vecino = sudoku.get(i*9+columna);
 			if(vecino.isPossible(actual.getValue())){
-				if(vecino.getNumPossibles() < 10){
-					
-					//System.out.println("Vecino"+(i*9+columna)+" : ");
-					//vecino.printPossibles();
-					
+				if(vecino.getNumPossibles() > 1 && vecino.getNumPossibles() < 10){
 					vecino.erasePossible(actual.getValue());					
 					restricciones++;
 				}
@@ -88,21 +75,13 @@ public class SudokuNode implements Comparable{
 		
 		int cuadX=fila/3;
 		int cuadY=columna/3;
-		
-		//System.out.println("Posibles vecinos cuadrado: ");
-		
-		//Comprueba el cuadrado		
 		int j;
 		for(i=0;i<3;i++){
 			j=0;
 			while(j<3){
 				vecino = sudoku.get((i+(cuadX*3))*9+(j+(cuadY*3)));
 				if(vecino.isPossible(actual.getValue())){
-					if(vecino.getNumPossibles() < 10){
-						
-						//System.out.println("Vecino"+(i+(cuadX*3))*9+(j+(cuadY*3))+" : ");
-						//vecino.printPossibles();
-						
+					if(vecino.getNumPossibles() > 1 && vecino.getNumPossibles() < 10){
 						vecino.erasePossible(actual.getValue());						
 						restricciones++;
 					}
@@ -113,8 +92,6 @@ public class SudokuNode implements Comparable{
 			}
 		}
 		
-		//System.out.println("Posibles vecinos diagonales: ");
-		
 		//Comprueba las diagonales
 		if(fila == columna){
 			i=0;
@@ -122,11 +99,7 @@ public class SudokuNode implements Comparable{
 			while(i<9&&j<9){
 				vecino = sudoku.get(i*9+j);
 				if(vecino.isPossible(actual.getValue())){
-					if(vecino.getNumPossibles() < 10){
-						
-						//System.out.println("Vecino"+(i*9+j)+" : ");
-						//vecino.printPossibles();
-						
+					if(vecino.getNumPossibles() > 1 && vecino.getNumPossibles() < 10){						
 						vecino.erasePossible(actual.getValue());						
 						restricciones++;
 					}
@@ -143,11 +116,7 @@ public class SudokuNode implements Comparable{
 			while(i<9&&j>=0){
 				vecino = sudoku.get(i*9+j);
 				if(vecino.isPossible(actual.getValue())){
-					if(vecino.getNumPossibles() < 10){
-						
-						//System.out.println("Vecino"+(i*9+j)+" : ");
-						//vecino.printPossibles();
-						
+					if(vecino.getNumPossibles() > 1 && vecino.getNumPossibles() < 10){
 						vecino.erasePossible(actual.getValue());						
 						restricciones++;
 					}
@@ -249,18 +218,24 @@ public class SudokuNode implements Comparable{
 	
 	public SudokuNode(String template){
 		
-		sudoku = new ArrayList();		
+		sudoku = new ArrayList();
+		filled=0;
+		restrictions = 0;
+		
+		looked = new boolean[81];
+		for(int i=0;i<81;i++)
+			looked[i]=false;
+			
+		active = 0;
+		
 		for(int i=0;i<template.length();i++){
 			sudoku.add(new SudokuField(Character.digit(template.charAt(i), 10)));			
-		}
-		filled=0;
+		}			
+		
 		for(int i=0;i<81;i++){
-			if(!sudoku.get(i).isInitial())
-				active = i;
-			else
+			if(sudoku.get(i).isInitial())
 				filled++;
 		}
-		restrictions = 0;
 		createRestrictions();
 		
 	}
@@ -268,11 +243,17 @@ public class SudokuNode implements Comparable{
 	public SudokuNode(ArrayList<SudokuField> tablero,int act,int pos,int fld){
 		//No me fioooo no me fio
 		sudoku = new ArrayList<SudokuField>();
-		for(int i=0;i<81;i++)
-			sudoku.add((SudokuField)tablero.get(i).clone());
-		
 		active = act;
 		filled = fld+1;
+		
+		looked = new boolean[81];
+		for(int i=0;i<81;i++)
+			looked[i]=false;
+		
+		for(int i=0;i<81;i++){
+			sudoku.add((SudokuField)tablero.get(i).clone());
+		}
+				
 		SudokuField campo = sudoku.get(active);
 				
 		campo.setValue(pos);
@@ -281,6 +262,16 @@ public class SudokuNode implements Comparable{
 		campo.setInitial(true);
 		
 		restrictions = expandRestrictions();
+		
+	}
+	
+	public double utility(double facFill,double facPosAc,double facRest){
+		
+		double fillN = filled/81.0;
+		double possN = this.getActiveNumPossibles()/9.0;
+		double restN = restrictions/40.0;
+		
+		return fillN*facFill+facPosAc*(1-possN)+facRest*restN;
 		
 	}
 	
@@ -340,18 +331,21 @@ public class SudokuNode implements Comparable{
 	public int getNextActive(){
 		
 		SudokuField campo;
+		
 		int minpos=0;
-		for(int i=1;i<81;i++){
+		
+		for(int i=0;i<81;i++){
 			campo = sudoku.get(i);
-			if(!campo.isInitial()){
-				if(campo.getNumPossibles() < sudoku.get(minpos).getNumPossibles())
-					minpos = i;
+			if(!campo.isInitial() && !looked[i]){
+				if(campo.getNumPossibles() < sudoku.get(minpos).getNumPossibles()){
+					looked[i]=true;
+					minpos=i;
+				}
 			}
 		}
 		if(sudoku.get(minpos).getNumPossibles() == 10)
 			return -1;
 		return minpos;
-		
 	}
 	
 	public void printAllPossibles(){
@@ -370,16 +364,12 @@ public class SudokuNode implements Comparable{
 	public int compareTo(Object t) {
 		
 		SudokuNode nodo = (SudokuNode)t;
-		SudokuField campo = sudoku.get(active);
+		double miUtilidad = this.utility(0.9,0.05,0.05);
+		double tUtilidad = nodo.utility(0.9,0.05,0.05);
 		
-		//el nodo t es descendiente
-		if(nodo.getNumFilled() > this.getNumFilled())
-			return 1;
-		if(nodo.getNumFilled() < this.getNumFilled())
+		if(miUtilidad > tUtilidad)
 			return -1;
-		if(this.getNumRestrictions() > nodo.getNumRestrictions())
-			return -1;
-		if(this.getNumRestrictions() < nodo.getNumRestrictions())
+		if(miUtilidad < tUtilidad)
 			return 1;
 		return 0;
 		
