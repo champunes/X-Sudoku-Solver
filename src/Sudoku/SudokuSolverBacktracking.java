@@ -5,7 +5,7 @@ package Sudoku;
  *
  * @author Jose Angel Gonzalez Molina
  */
-public class SudokuSolverBacktracking extends SudokuSolver{
+public class SudokuSolverBacktracking {
 
 	private int sudoku[][];
 	private int solucion[][];
@@ -161,7 +161,6 @@ public class SudokuSolverBacktracking extends SudokuSolver{
 		}
 	}
 
-	@Override
 	public void solve() {
 		this.toString();
 		backtrack(0,0);	

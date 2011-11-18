@@ -5,12 +5,12 @@ package Sudoku;
  *
  * @author Jose Angel Gonzalez Molina
  */
-public abstract class SudokuSolver
+public class SudokuSolver
 {
 
-	public SudokuSolver(){
-		
-	}
+	private SudokuSolverBacktracking solverB;
+	private SudokuSolverHeuristic solverH;
+	String solution;
 
 	/**
 	 * Constructor
@@ -18,7 +18,9 @@ public abstract class SudokuSolver
 	 */
 	public SudokuSolver (String template)
 	{
-		template.toString();
+		solverB = new SudokuSolverBacktracking(template);
+		solverH = new SudokuSolverHeuristic(template);
+		solution = new String();
 	}
 
 
@@ -29,6 +31,13 @@ public abstract class SudokuSolver
 	 */
 	public void solve()
 	{
+		solverH.solve();
+		solution = solverH.toString();
+	}
+	
+	public void solveBacktracking(){
+		solverB.solve();
+		solution = solverH.toString();
 	}
 
 	/**
@@ -38,15 +47,7 @@ public abstract class SudokuSolver
 	@Override
 	public String toString ()
 	{
-		return "971384265"
-			 + "324516789"
-			 + "586927413"
-			 + "415832976"
-			 + "792641358"
-			 + "638795142"
-			 + "257463891"
-			 + "169278534"
-			 + "843159627";
+		return solution;
 	}
 
 }

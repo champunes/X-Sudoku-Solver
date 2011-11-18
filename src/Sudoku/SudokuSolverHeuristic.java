@@ -6,7 +6,7 @@ import java.util.PriorityQueue;
  *
  * @author Jose Angel Gonzalez Molina
  */
-public class SudokuSolverHeuristic extends SudokuSolver{
+public class SudokuSolverHeuristic {
 	
 	PriorityQueue<SudokuNode> stack;
 	SudokuNode solution;
@@ -18,7 +18,6 @@ public class SudokuSolverHeuristic extends SudokuSolver{
 		
 	}
 	
-	@Override
 	public void solve(){
 		
 		int sigCasilla;
