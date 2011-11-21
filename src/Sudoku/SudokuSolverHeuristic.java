@@ -1,4 +1,4 @@
-package Sudoku;
+	package Sudoku;
 
 import java.util.PriorityQueue;
 
